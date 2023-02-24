@@ -71,7 +71,7 @@ export default class WhatsappController {
                 responseGetParameterForAnswerTask.parameters,
                 responseGetParameterForAnswerTask.type,
                 '113492004941110',
-                'EAAFlbvoSH6YBAMgP8cyLT7dGPGL4fpHPzPAwuMBjTg6kYdLHrnSUiHUdZC9coGUpnARY7YCKCOnnvTJlnjz7gFueZAkN9YUxO8U6RWNnbigel6SNuf9izhPaX7xC17cVquvWzzZAOSFhyP2xsXXF28E8ZC7WZAu4ZCYJ8GPd5EXMD0yyCPrvAM0tF2wxKuyUeZB00y8oa4yxAZDZD',
+                'EAAFlbvoSH6YBADcKVZA1wA5AnwVkHX152iKDkQa1wzlllVPAdffwmzr0GULuxG3hIy3x6xHDhVEi8QROdaLXS0dTFmfqoEjiAIXKMY4qvbAuNW3ognn3R25AkpTBOWAdmb3IM2rpxrLmJZB9oDRkUVfoIS871rakUX2Hm1NBxG6XTAUcHJCeSGSuJNv5tYOXizzLERrgZDZD',
                 body.messages[0].from)
                 .then(() => {
                   res.send('EVENT_RECEIVED')
@@ -82,7 +82,7 @@ export default class WhatsappController {
               switch (responseGetTaskById[0].data().type_task) {
                 case 'Subir imagenes':{
                   whatsappService.getMediaMessage(
-                    'EAAFlbvoSH6YBAMgP8cyLT7dGPGL4fpHPzPAwuMBjTg6kYdLHrnSUiHUdZC9coGUpnARY7YCKCOnnvTJlnjz7gFueZAkN9YUxO8U6RWNnbigel6SNuf9izhPaX7xC17cVquvWzzZAOSFhyP2xsXXF28E8ZC7WZAu4ZCYJ8GPd5EXMD0yyCPrvAM0tF2wxKuyUeZB00y8oa4yxAZDZD',
+                    'EAAFlbvoSH6YBADcKVZA1wA5AnwVkHX152iKDkQa1wzlllVPAdffwmzr0GULuxG3hIy3x6xHDhVEi8QROdaLXS0dTFmfqoEjiAIXKMY4qvbAuNW3ognn3R25AkpTBOWAdmb3IM2rpxrLmJZB9oDRkUVfoIS871rakUX2Hm1NBxG6XTAUcHJCeSGSuJNv5tYOXizzLERrgZDZD',
                     responseGetParameterForAnswerTask.id_image)
                     .then((image) => {
                       const fileName = String(responseGetParameterForAnswerTask.id_image) + '.' + String(image.headers['content-type'].substr(Number(image.headers['content-type'].indexOf('/')) + 1))
@@ -126,7 +126,7 @@ export default class WhatsappController {
                         responseGetParameterForAnswerTask.parameters,
                         responseGetParameterForAnswerTask.type,
                         '113492004941110',
-                        'EAAFlbvoSH6YBAMgP8cyLT7dGPGL4fpHPzPAwuMBjTg6kYdLHrnSUiHUdZC9coGUpnARY7YCKCOnnvTJlnjz7gFueZAkN9YUxO8U6RWNnbigel6SNuf9izhPaX7xC17cVquvWzzZAOSFhyP2xsXXF28E8ZC7WZAu4ZCYJ8GPd5EXMD0yyCPrvAM0tF2wxKuyUeZB00y8oa4yxAZDZD',
+                        'EAAFlbvoSH6YBADcKVZA1wA5AnwVkHX152iKDkQa1wzlllVPAdffwmzr0GULuxG3hIy3x6xHDhVEi8QROdaLXS0dTFmfqoEjiAIXKMY4qvbAuNW3ognn3R25AkpTBOWAdmb3IM2rpxrLmJZB9oDRkUVfoIS871rakUX2Hm1NBxG6XTAUcHJCeSGSuJNv5tYOXizzLERrgZDZD',
                         body.messages[0].from)
                         .then(() => {
                           res.send('EVENT_RECEIVED')
