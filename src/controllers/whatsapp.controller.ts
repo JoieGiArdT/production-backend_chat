@@ -71,7 +71,7 @@ export default class WhatsappController {
                 responseGetParameterForAnswerTask.parameters,
                 responseGetParameterForAnswerTask.type,
                 '113492004941110',
-                'EAAFlbvoSH6YBADcKVZA1wA5AnwVkHX152iKDkQa1wzlllVPAdffwmzr0GULuxG3hIy3x6xHDhVEi8QROdaLXS0dTFmfqoEjiAIXKMY4qvbAuNW3ognn3R25AkpTBOWAdmb3IM2rpxrLmJZB9oDRkUVfoIS871rakUX2Hm1NBxG6XTAUcHJCeSGSuJNv5tYOXizzLERrgZDZD',
+                String(process.env.WP_TOKEN),
                 body.messages[0].from)
                 .then(() => {
                   res.send('EVENT_RECEIVED')
@@ -82,7 +82,7 @@ export default class WhatsappController {
               switch (responseGetTaskById[0].data().type_task) {
                 case 'Subir imagenes':{
                   whatsappService.getMediaMessage(
-                    'EAAFlbvoSH6YBADcKVZA1wA5AnwVkHX152iKDkQa1wzlllVPAdffwmzr0GULuxG3hIy3x6xHDhVEi8QROdaLXS0dTFmfqoEjiAIXKMY4qvbAuNW3ognn3R25AkpTBOWAdmb3IM2rpxrLmJZB9oDRkUVfoIS871rakUX2Hm1NBxG6XTAUcHJCeSGSuJNv5tYOXizzLERrgZDZD',
+                    String(process.env.WP_TOKEN),
                     responseGetParameterForAnswerTask.id_image)
                     .then((image) => {
                       const fileName = String(responseGetParameterForAnswerTask.id_image) + '.' + String(image.headers['content-type'].substr(Number(image.headers['content-type'].indexOf('/')) + 1))
@@ -126,7 +126,7 @@ export default class WhatsappController {
                         responseGetParameterForAnswerTask.parameters,
                         responseGetParameterForAnswerTask.type,
                         '113492004941110',
-                        'EAAFlbvoSH6YBADcKVZA1wA5AnwVkHX152iKDkQa1wzlllVPAdffwmzr0GULuxG3hIy3x6xHDhVEi8QROdaLXS0dTFmfqoEjiAIXKMY4qvbAuNW3ognn3R25AkpTBOWAdmb3IM2rpxrLmJZB9oDRkUVfoIS871rakUX2Hm1NBxG6XTAUcHJCeSGSuJNv5tYOXizzLERrgZDZD',
+                        String(process.env.WP_TOKEN),
                         body.messages[0].from)
                         .then(() => {
                           res.send('EVENT_RECEIVED')
