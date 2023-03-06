@@ -57,7 +57,44 @@ export default class WhatsappController {
           ))
           if (Object.entries(responseGetParameterForAnswerTask).length === 0 &&
             (responseGetTaskById[indexTasks] === undefined || responseGetTaskById[indexTasks].data().status === 'CLOSE')) {
-            res.send('ES UNA CONVERSACION')
+            const id = body.contacts[0].wa_id
+            conversationService.getConversationById(id).then((responseGetConversationById) => {
+              new Promise((resolve, reject) => {
+                if (responseGetConversationById[0] != null) {
+                  resolve(responseGetConversationById[0].id)
+                } else {
+                  (async (): Promise<DocumentReference<DocumentData>> => {
+                    return await conversationService.createConversation(
+                      new SchemaConversation(
+                        id,
+                        body.contacts[0].profile.name,
+                        body.messages[0].from,
+                        body.messages[0].id
+                      ).conversation)
+                  })().then((responseCreateConversation) => resolve(responseCreateConversation.id))
+                    .catch((error) => reject(error))
+                }
+              }).then((idConversation) => {
+                const schemaMessage = new SchemaMessage(
+                  body.messages[0].id,
+                  body.messages[0].from,
+                  body.messages[0].type,
+                  body.messages[0][body.messages[0].type]
+                )
+                messageService.createMessage(
+                  schemaMessage.message,
+                  idConversation
+                ).then(() => {
+                  res.send('EVENT_RECEIVED')
+                }).catch((error) => {
+                  apiErrorHandler(error, res, 'Error al crear mensaje en Firebase.')
+                })
+              }).catch((error) => {
+                apiErrorHandler(error, res, 'Error al extraer id.')
+              })
+            }).catch((error) => {
+              apiErrorHandler(error, res, 'Error al revisar si ya existe conversacion.')
+            })
           } else {
             new Promise((resolve, reject) => {
               if (responseGetTaskById[indexTasks] === undefined || responseGetTaskById[indexTasks].data().status === 'CLOSE') {
@@ -99,8 +136,9 @@ export default class WhatsappController {
                       reject(error)
                       apiErrorHandler(error, res, 'Error al revisar la existencia del numero en ninox.')
                     })
+                } else {
+                  resolve('denied')
                 }
-                resolve('denied')
               } else {
                 if (responseGetTaskById[indexTasks].data().status !== 'DONE' && responseGetParameterForAnswerTask.validation === 'approved') {
                   const array = responseGetTaskById[indexTasks].data().sequence_task
@@ -137,7 +175,7 @@ export default class WhatsappController {
             })
               .then((authorization) => {
                 if (authorization === 'approved') {
-                  if (responseGetParameterForAnswerTask.response_type === 'wp' && responseGetTaskById[indexTasks].data().status !== 'CLOSE') {
+                  if (responseGetParameterForAnswerTask.response_type === 'wp') {
                     whatsappService.sendMessageWhatsapp(
                       responseGetParameterForAnswerTask.parameters,
                       responseGetParameterForAnswerTask.type,
@@ -225,53 +263,6 @@ export default class WhatsappController {
     } catch (error) {
       res.status(400).send('NOT_RECEIVED')
     }
-  }
-
-  /* requestTypeTask (body: any,
-    responseGetTaskById: any,
-    responseGetParameterForAnswerTask: any
-  ): void {
-  }
- */
-  requestTypeConversation ({ body }: Request, res: Response): void {
-    const id = body.contacts[0].wa_id
-    conversationService.getConversationById(id).then((responseGetConversationById) => {
-      new Promise((resolve, reject) => {
-        if (responseGetConversationById[0] != null) {
-          resolve(responseGetConversationById[0].id)
-        } else {
-          (async (): Promise<DocumentReference<DocumentData>> => {
-            return await conversationService.createConversation(
-              new SchemaConversation(
-                id,
-                body.contacts[0].profile.name,
-                body.messages[0].from,
-                body.messages[0].id
-              ).conversation)
-          })().then((responseCreateConversation) => resolve(responseCreateConversation.id))
-            .catch((error) => reject(error))
-        }
-      }).then((idConversation) => {
-        const schemaMessage = new SchemaMessage(
-          body.messages[0].id,
-          body.messages[0].from,
-          body.messages[0].type,
-          body.messages[0][body.messages[0].type]
-        )
-        messageService.createMessage(
-          schemaMessage.message,
-          idConversation
-        ).then(() => {
-          res.send('EVENT_RECEIVED')
-        }).catch((error) => {
-          throw new Error('ERROR: CREACION DEL MENSAJE - ' + String(error))
-        })
-      }).catch((error) => {
-        throw new Error('ERROR: EXTRACCION DE ID - ' + String(error))
-      })
-    }).catch((error) => {
-      throw new Error('ERROR: REVISION DE CONVERSACION EXISTENTE - ' + String(error))
-    })
   }
 
   /* taskDone (
