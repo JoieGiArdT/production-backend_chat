@@ -6,7 +6,7 @@ class BotUtil {
   ): any {
     let callback
     switch (typeTask) {
-      case 'Subir imagenes': {
+      case 'Fotos': {
         callback = this.uploadImagesBot
         break
       }
@@ -142,12 +142,17 @@ class BotUtil {
         return {
           parameters: {
             buttonName: 'Tipo',
-            bodyText: 'Seleccione el tipo de subida:',
+            bodyText: '🧝‍♂️Como primer paso, cuentame que tipo de inventario subiras📤:',
             sections: {
               tipo: [{
-                id: 'INV',
-                title: 'Inventario',
-                description: 'Seleccione esta opcion...'
+                id: 'OCU',
+                title: 'Ocupacion',
+                description: 'Seleccione esta opcion cuando...'
+              },
+              {
+                id: 'DES',
+                title: 'Desocupacion',
+                description: 'Seleccione esta opcion cuando...'
               }]
             },
             options: {
@@ -174,7 +179,7 @@ class BotUtil {
         if (booleano) {
           return {
             parameters: {
-              text: 'Digite el codigo del Inmueble',
+              text: '🧝‍♂️Excelente!!, ahora como ultimo dato solo necesito que me compartas el codigo del Inmueble🏠 al cual quieres subirle un inventario.',
               options: {
                 preview_url: false
               }
@@ -213,7 +218,7 @@ class BotUtil {
         if (booleano) {
           return {
             parameters: {
-              text: 'Las imagenes subidas a continuacion seran montadas al inmueble especificaso.',
+              text: 'Increible!!, ya esta todo listo. Ahora las imagenes📷 subidas a continuacion seran montadas al inmueble🏠 especificado.',
               options: {
                 preview_url: false
               }
@@ -250,7 +255,7 @@ class BotUtil {
         if (booleano) {
           return {
             parameters: {
-              text: 'Las imagenes subidas a continuacion seran montadas al inmueble especificado.',
+              text: 'Las imagenes subidas a continuacion seran montadas al inmueble especificado anteriormente.',
               options: {
                 preview_url: false
               }
