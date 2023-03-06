@@ -93,7 +93,6 @@ export default class WhatsappController {
                           })
                       } else {
                         resolve('denied')
-                        res.send('EVENT_RECEIVED')
                       }
                     })
                     .catch((error) => {
@@ -149,7 +148,7 @@ export default class WhatsappController {
                       }).catch((error) => {
                         apiErrorHandler(error, res, 'Error al enviar respuesta.')
                       })
-                  } else {
+                  } else if (responseGetTaskById[indexTasks].data().status !== 'CLOSE') {
                     switch (responseGetTaskById[indexTasks].data().type_task) {
                       case 'Fotos':{
                         whatsappService.getMediaMessage(
