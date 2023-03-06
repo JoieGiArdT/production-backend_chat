@@ -81,7 +81,7 @@ export default class WhatsappController {
                                 }
                               },
                               'text',
-                              '113492004941110',
+                              String(process.env.ID_NUMBER),
                               String(process.env.WP_TOKEN),
                               body.messages[0].from
                             )
@@ -100,6 +100,7 @@ export default class WhatsappController {
                       apiErrorHandler(error, res, 'Error al revisar la existencia del numero en ninox.')
                     })
                 }
+                resolve('denied')
               } else {
                 if (responseGetTaskById[indexTasks].data().status !== 'DONE' && responseGetParameterForAnswerTask.validation === 'approved') {
                   const array = responseGetTaskById[indexTasks].data().sequence_task
@@ -114,7 +115,7 @@ export default class WhatsappController {
                     void taskService.updateTask(responseGetTaskById[indexTasks].id, {
                       status: 'CLOSE'
                     })
-                    res.send('EVENT_RECEIVED')
+                    resolve('denied')
                   }
                   if (responseGetTaskById[indexTasks].data().sequence_task.length >= 3) {
                     void whatsappService.sendMessageWhatsapp(
@@ -125,7 +126,7 @@ export default class WhatsappController {
                         }
                       },
                       'text',
-                      '113492004941110',
+                      String(process.env.ID_NUMBER),
                       String(process.env.WP_TOKEN),
                       body.messages[0].from
                     )
@@ -140,7 +141,7 @@ export default class WhatsappController {
                     whatsappService.sendMessageWhatsapp(
                       responseGetParameterForAnswerTask.parameters,
                       responseGetParameterForAnswerTask.type,
-                      '113492004941110',
+                      String(process.env.ID_NUMBER),
                       String(process.env.WP_TOKEN),
                       body.messages[0].from)
                       .then(() => {
@@ -195,7 +196,7 @@ export default class WhatsappController {
                             whatsappService.sendMessageWhatsapp(
                               responseGetParameterForAnswerTask.parameters,
                               responseGetParameterForAnswerTask.type,
-                              '113492004941110',
+                              String(process.env.ID_NUMBER),
                               String(process.env.WP_TOKEN),
                               body.messages[0].from)
                               .then(() => {
