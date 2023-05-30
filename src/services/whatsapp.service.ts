@@ -43,6 +43,19 @@ class WhatsappService {
     recipient_type: 'individual'
   }
 
+  getMediaPayload (urlOrObjectId: string, options?: MediaBase): Media {
+    console.log({
+      id: urlOrObjectId,
+      caption: options?.caption,
+      filename: options?.filename
+    })
+    return {
+      id: urlOrObjectId,
+      caption: options?.caption,
+      filename: options?.filename
+    }
+  }
+
   async sendMessageWhatsapp (
     paramaters: any,
     typeMessage: string,
@@ -84,8 +97,14 @@ class WhatsappService {
         callback = this.sendContacts
         break
       }
-      case 'interactive':{
+      case 'list':{
+        typeMessage = 'interactive'
         callback = this.sendList
+        break
+      }
+      case 'button':{
+        typeMessage = 'interactive'
+        callback = this.sendReplyButtons
         break
       }
       default:{
@@ -113,7 +132,7 @@ class WhatsappService {
     data: Message,
     fromPhoneNumberId: string,
     accessToken: string,
-    version: string = 'v16.0'
+    version: string = 'v17.0'
   ): Promise<SendMessageResult> {
     try {
       const { data: rawResult } = await axios(`https://graph.facebook.com/${version}/${fromPhoneNumberId}/messages`, {
@@ -179,7 +198,10 @@ class WhatsappService {
     }
   ): MediaMessage {
     return {
-      document: this.getMediaPayload(parameters.urlOrObjectId, parameters.options)
+      document: {
+        id: parameters.urlOrObjectId,
+        ...parameters.options
+      }
     }
   }
 
@@ -324,18 +346,28 @@ class WhatsappService {
     }
   }
 
-  getMediaPayload (urlOrObjectId: string, options?: MediaBase): Media {
-    return {
-      link: urlOrObjectId,
-      caption: options?.caption,
-      filename: options?.filename
-    }
+  async uploadDocumentId (
+    data: any,
+    fromPhoneNumberId: string,
+    accessToken: string,
+    version: string = 'v17.0'
+  ): Promise<string> {
+    return (await axios(`https://graph.facebook.com/${version}/${fromPhoneNumberId}/media`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${accessToken}`
+      },
+      data
+    })).data.id
   }
 
-  async getMediaMessage (accessToken: string,
-    objectId: string
+  async getMediaMessage (
+    objectId: string,
+    accessToken: string,
+    version: string = 'v17.0'
   ): Promise<any> {
-    const responseGetMedia = await axios(`https://graph.facebook.com/v16.0/${objectId}`, {
+    const responseGetMedia = await axios(`https://graph.facebook.com/${version}/${objectId}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken}`

@@ -17,7 +17,7 @@ export class SchemaTask {
       external_id: externalId,
       type_task: typeTask,
       timestamp: null,
-      status: 'PENDING',
+      status: 'phone',
       sequence_task: sequenceTask
     }
   }
