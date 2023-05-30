@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response } from 'express'
 import { ninoxService } from '../services/ninox.service'
 import { taskService, SchemaTask } from '../services/task.service'
@@ -7,26 +6,9 @@ import { chatGPTService } from '../services/chatGPT.service'
 import { fileUtil } from '../utils/file.util'
 
 export default class WhatsappController {
-  verifyToken ({ query }: Request, res: Response): void {
+  receivedMessageWhatsapp (req: Request, res: Response): void {
     try {
-      const accessToken = String(process.env.TOKEN)
-      if (query['hub.challenge'] != null &&
-        String(query['hub.verify_token']) != null &&
-        String(query['hub.verify_token']) === accessToken) {
-        res.send(query['hub.challenge'])
-      } else {
-        res.status(400).send('VERIFICATION_FAILED')
-      }
-    } catch (error) {
-      res.status(400).send()
-    }
-  }
-
-  public receivedMessageWhatsapp (req: Request, res: Response): void {
-    try {
-      const body = req.body.entry[0].changes[0].value // Mensaje recibido de WhatsApp
-
-      // Verificar si es la primera interacción del usuario o si ya ha iniciado una conversación previa
+      const body = req.body.entry[0].changes[0].value
       taskService.getTaskById(body.contacts[0].wa_id)
         .then((responseGetTaskById) => {
           let indexTasks = 0
@@ -97,6 +79,21 @@ export default class WhatsappController {
       res.status(200).send('RECEIVED')
     } catch (error) {
       res.status(400).send('NOT_RECEIVED')
+    }
+  }
+
+  verifyToken ({ query }: Request, res: Response): void {
+    try {
+      const accessToken = String(process.env.TOKEN)
+      if (query['hub.challenge'] != null &&
+        String(query['hub.verify_token']) != null &&
+        String(query['hub.verify_token']) === accessToken) {
+        res.send(query['hub.challenge'])
+      } else {
+        res.status(400).send('VERIFICATION_FAILED')
+      }
+    } catch (error) {
+      res.status(400).send()
     }
   }
 
@@ -325,9 +322,7 @@ export default class WhatsappController {
   }
 
   private async processMenuStep (message: any, task: any): Promise<void> {
-    const phone = task.phone
     const menuOption = String(message.messages[0][message.messages[0].type].text).toLowerCase()
-
     switch (menuOption) {
       case 'consulta': {
         void taskService.updateTask(task.id, {
