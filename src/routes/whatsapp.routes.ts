@@ -1,4 +1,4 @@
-import { Router } from 'express'
+/* import { Router } from 'express'
 import WhatsappController from '../controllers/whatsapp.controller'
 
 class WhatsappRoutes {
@@ -17,3 +17,4 @@ class WhatsappRoutes {
 
 const router = (new WhatsappRoutes()).router
 export { router }
+ */
