@@ -1,6 +1,5 @@
-
 class ChatGPTService {
-  private readonly apiKey = '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'
+  private readonly apiKey = String(process.env.OIA_KEY)
   async requestChatGPT (
     prompt: string
   ): Promise<string> {

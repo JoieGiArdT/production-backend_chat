@@ -1,10 +1,10 @@
 import * as dotenv from 'dotenv'
-import express, { Application } from 'express'
+import express from 'express'
 import Server from './src/app'
 
 dotenv.config()
 
-const app: Application = express()
+const app = express()
 // eslint-disable-next-line no-new
 new Server(app)
 const port: number = (process.env.PORT != null) ? parseInt(process.env.PORT, 10) : 80
