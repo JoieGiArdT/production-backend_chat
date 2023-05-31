@@ -12,16 +12,16 @@ export default class WhatsappController {
           let maxSeconds = 0
           let index = 0
           responseGetTaskById.forEach((task) => {
+            console.log(task.data())
             if (task.data().timestamp.seconds > maxSeconds) {
               maxSeconds = task.data().timestamp.seconds
               indexTasks = index
             }
             index++
           })
-          if ((responseGetTaskById[indexTasks] === undefined || responseGetTaskById[indexTasks].data().status === 'CLOSE') ||
-          (responseGetTaskById[indexTasks].data().sequence_task).length as number === 0) {
+          if (responseGetTaskById[indexTasks] === undefined || responseGetTaskById[indexTasks].data().status === 'CLOSE') {
             bot.processNewTask(body, res).then(() => {
-              console.log('listo')
+              console.log('nuevo')
             }).catch(() => {})
           } else {
             let isMenu = false

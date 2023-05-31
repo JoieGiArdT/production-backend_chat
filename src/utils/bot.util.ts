@@ -253,7 +253,7 @@ class Bot {
       const menuOption = String(message.messages[0][message.messages[0].type].text).toLowerCase()
       switch (menuOption) {
         case 'consulta': {
-          void taskService.updateTask(task.id, {
+          await taskService.updateTask(task.id, {
             status: 'query'
           })
           await whatsappService.sendMessageWhatsapp(
@@ -274,7 +274,7 @@ class Bot {
           break
         }
         case 'documento': {
-          void taskService.updateTask(task.id, {
+          await taskService.updateTask(task.id, {
             status: 'document'
           })
           await whatsappService.sendMessageWhatsapp(
