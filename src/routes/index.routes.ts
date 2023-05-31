@@ -1,18 +1,16 @@
 import { Router, Application } from 'express'
 // import { readdirSync } from 'fs'
-import WhatsappController from '../controllers/whatsapp.controller'
+import { receivedMessageWhatsapp, verifyToken } from '../controllers/whatsapp.controller'
 
 export default class Routes {
-  PATH_ROUTER = `${__dirname}`
   router = Router()
-  whatsappController = new WhatsappController()
   constructor (app: Application) {
     this.intializeRoutes(app)
   }
 
   intializeRoutes (app: Application): void {
-    app.get('/whatsapp', this.whatsappController.verifyToken)
-    app.post('/whatsapp', this.whatsappController.receivedMessageWhatsapp)
+    app.post('/whatsapp', receivedMessageWhatsapp)
+    app.get('/whatsapp', verifyToken)
     /* readdirSync(this.PATH_ROUTER).forEach((fileName) => {
       const route = String(this.getRouteName(fileName))
       if (route !== 'index') {

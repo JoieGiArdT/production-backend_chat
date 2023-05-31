@@ -5,7 +5,7 @@ import whatsappService from '../services/whatsapp.service'
 import { chatGPTService } from '../services/chatGPT.service'
 import { fileUtil } from '../utils/file.util'
 
-export default class WhatsappController {
+class WhatsappController {
   receivedMessageWhatsapp (req: Request, res: Response): void {
     try {
       const body = req.body.entry[0].changes[0].value
@@ -564,4 +564,7 @@ export default class WhatsappController {
   }
 }
 
-// export const whatsappController = new WhatsappController()
+const whatsappController = new WhatsappController()
+const verifyToken = whatsappController.verifyToken
+const receivedMessageWhatsapp = whatsappController.receivedMessageWhatsapp
+export { verifyToken, receivedMessageWhatsapp }
