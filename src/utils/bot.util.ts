@@ -254,7 +254,7 @@ class Bot {
         ? String(message.messages[0]?.interactive?.button_reply?.title).toLowerCase()
         : undefined
       switch (menuOption) {
-        case 'consulta': {
+        case 'consultas': {
           await taskService.updateTask(task.id, {
             status: 'query'
           })
@@ -275,7 +275,7 @@ class Bot {
           )
           break
         }
-        case 'documento': {
+        case 'documentación': {
           await taskService.updateTask(task.id, {
             status: 'document'
           })
@@ -304,7 +304,8 @@ class Bot {
               bodyText: 'Lo siento, pero la opción que seleccionaste no es válida. Por favor, elige una opción válida de la lista proporcionada. 📋🔍',
               buttons: {
                 Consulta: 'Consultas',
-                Documento: 'Documentación'
+                Documento: 'Documentación',
+                Menu: 'Volver al menú'
               },
               options: {
                 // Opciones adicionales, si es necesario
