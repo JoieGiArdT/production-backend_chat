@@ -1,14 +1,19 @@
+import { Configuration, OpenAIApi } from 'openai'
 class ChatGPTService {
   private readonly apiKey = String(process.env.OIA_KEY)
   async requestChatGPT (
-    prompt: string
+    prompts: string
   ): Promise<string> {
-    // const { ChatGPTAPI } = yield import('chatgpt');
-    const { ChatGPTAPI } = await import('chatgpt')
-    const api = new ChatGPTAPI({
+    const configuration = new Configuration({
+      organization: 'org-00Q6Bey8RjIS5ZbdXuysfmFG',
       apiKey: this.apiKey
     })
-    return (await api.sendMessage(prompt)).text
+    const openai = new OpenAIApi(configuration)
+    const response = await openai.createCompletion({
+      model: 'gpt-3.5-turbo',
+      prompt: prompts
+    })
+    return String(response.data.choices[0])
   }
 }
 const chatGPTService = new ChatGPTService()
