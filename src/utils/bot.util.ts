@@ -348,7 +348,7 @@ class Bot {
           message.messages[0].from
         )
       } else {
-        const prompt = 'Necesito que respondas a la siguiente como si fueras un agente de servicio al cliente, tu respuesta será reflejada en el chat de un bot, por lo que las respuestas que generes no pueden ser largas. La consulta que hace el cliente es la siguiente:'
+        const prompt = 'Necesito que respondas a la siguiente como si fueras un agente de servicio al cliente, tu respuesta será reflejada en el chat de un bot, por lo que las respuestas que generes no pueden ser largas. La consulta que hace el cliente es la siguiente:' +
         String(message.messages[0][message.messages[0].type].body)
         const response = await chatGPTService.requestChatGPT(prompt)
         await whatsappService.sendMessageWhatsapp(
@@ -393,13 +393,17 @@ class Bot {
         case 'inventario': {
           // Obtener el inventario desde Ninox
           const contractDocument = await ninoxService.getInventoryDocumentByAddress(task.data().sequence_task[2])
+          console.log(contractDocument)
           const name = await fileUtil.downloadBufferAsFile(contractDocument)
+          console.log(name)
           const document = await fileUtil.openStreamAndgetFileFormData(name)
+          console.log(document)
           const id = await whatsappService.uploadDocumentId(
             document,
             String(process.env.ID_NUMBER),
             String(process.env.WP_TOKEN)
           )
+          console.log(id)
           await whatsappService.sendMessageWhatsapp(
             {
               urlOrObjectId: id,
@@ -407,7 +411,7 @@ class Bot {
                 // Opciones adicionales, si es necesario
               }
             },
-            'button',
+            'document',
             String(process.env.ID_NUMBER),
             String(process.env.WP_TOKEN),
             message.messages[0].from
