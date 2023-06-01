@@ -74,6 +74,53 @@ export default class WhatsappController {
                     )
                     break
                   }
+                  case 'Finalizar':{
+                    void taskService.updateTask(responseGetTaskById[indexTasks].id, {
+                      sequence_task: [],
+                      status: 'encuesta'
+                    })
+                    void whatsappService.sendMessageWhatsapp(
+                      {
+                        buttonName: 'Inmuebles',
+                        bodyText: '🤖 ¡Gracias por tu tiempo y por llenar nuestra encuesta! Valoramos tus comentarios. Si tienes alguna otra pregunta o necesitas ayuda en el futuro, no dudes en contactarnos. ¡Que tengas un excelente día! 😊',
+                        sections: [
+                          {
+                            id: '1',
+                            title: '1',
+                            description: ''
+                          },
+                          {
+                            id: '2',
+                            title: '2',
+                            description: ''
+                          },
+                          {
+                            id: '3',
+                            title: '3',
+                            description: ''
+                          },
+                          {
+                            id: '4',
+                            title: '4',
+                            description: ''
+                          },
+                          {
+                            id: '5',
+                            title: '5',
+                            description: ''
+                          }
+                        ],
+                        options: {
+                          // Opciones adicionales, si es necesario
+                        }
+                      },
+                      'list',
+                      String(process.env.ID_NUMBER),
+                      String(process.env.WP_TOKEN),
+                      body.messages[0].from
+                    )
+                    break
+                  }
                 }
               } else {
                 void bot.processExistingTask(body, responseGetTaskById[indexTasks], res)

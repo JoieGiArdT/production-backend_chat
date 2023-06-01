@@ -28,6 +28,9 @@ class Bot {
         case 'document':
           await this.processDocumentStep(message, existingTask, res)
           break
+        case 'finalizar':
+          await this.processEncuestaStep(message, existingTask, res)
+          break
         default:
           await this.sendErrorMessage(message, res)
           break
@@ -362,7 +365,8 @@ class Bot {
           {
             bodyText: '¿Podrías brindarme más detalles o información adicional sobre tu consulta? De esta manera, podré comprenderte mejor y brindarte una respuesta más precisa y útil. ¡Estoy aquí para ayudarte! 😊',
             buttons: {
-              Menu: 'Volver al menú'
+              Menu: 'Volver al menú',
+              Fin: 'Finalizar'
             },
             options: {
               // Opciones adicionales, si es necesario
@@ -381,7 +385,8 @@ class Bot {
           {
             bodyText: response,
             buttons: {
-              Menu: 'Volver al menú'
+              Menu: 'Volver al menú',
+              Fin: 'Finalizar'
             },
             options: {
               // Opciones adicionales, si es necesario
@@ -458,7 +463,8 @@ class Bot {
               bodyText: '¡Perfecto! Aquí tienes el documento que me pediste. 📄✅ \n Si necesitas alguno otro documento o tienes alguna otra consulta, por favor indícame y con gusto te lo proporcionaré. ¡Estoy aquí para ayudarte en lo que necesites! 🤖🔍💼',
               buttons: {
                 Contrato: 'Contrato',
-                Menu: 'Volver al menú'
+                Menu: 'Volver al menú',
+                Fin: 'Finalizar'
               },
               options: {
                 // Opciones adicionales, si es necesario
@@ -498,7 +504,8 @@ class Bot {
               bodyText: '¡Perfecto! Aquí tienes el documento que me pediste. 📄✅ \n Si necesitas alguno otro documento o tienes alguna otra consulta, por favor indícame y con gusto te lo proporcionaré. ¡Estoy aquí para ayudarte en lo que necesites! 🤖🔍💼',
               buttons: {
                 Inventario: 'Inventario',
-                Menu: 'Volver al menú'
+                Menu: 'Volver al menú',
+                Fin: 'Finalizar'
               },
               options: {
                 // Opciones adicionales, si es necesario
@@ -561,6 +568,70 @@ class Bot {
       )
     } catch (error) {
       apiErrorHandler(error, res, 'sendErrorMessage: Se produjo un error al enviar el mensaje de error.')
+    }
+  }
+
+  async processEncuestaStep (message: any, task: any, res: any): Promise<void> {
+    try {
+      let booleano = false
+      Object.entries(message.messages[0]).forEach(([key, _value]) => {
+        if (key === 'interactive') {
+          booleano = true
+        }
+      })
+      if (!booleano) {
+        // Selección de dirección inválida
+        const errorMessage = 'Oops, parece que has seleccionado una opción inválida. Por favor, elige una opción del 1 al 5 de la lista. ¡Nos importa tu satisfacción! 😊👍'
+        await whatsappService.sendMessageWhatsapp(
+          {
+            text: errorMessage,
+            options: {
+              preview_url: false
+            }
+          },
+          'text',
+          String(process.env.ID_NUMBER),
+          String(process.env.WP_TOKEN),
+          message.messages[0].from
+        )
+      } else {
+        const hasLetters = /[a-zA-Z]/.test(message.messages[0][message.messages[0].type].list_reply.title)
+        const isNumber = /^[1-9]|10$/.test(message.messages[0][message.messages[0].type].list_reply.title)
+
+        if (!(hasLetters && isNumber)) {
+          const errorMessage = 'Oops, parece que has seleccionado una opción inválida. Por favor, elige una opción del 1 al 5 de la lista. ¡Nos importa tu satisfacción! 😊👍'
+          await whatsappService.sendMessageWhatsapp(
+            {
+              text: errorMessage,
+              options: {
+                preview_url: false
+              }
+            },
+            'text',
+            String(process.env.ID_NUMBER),
+            String(process.env.WP_TOKEN),
+            message.messages[0].from
+          )
+        } else {
+          await whatsappService.sendMessageWhatsapp(
+            {
+              text: '🤖 ¡Gracias por tu tiempo y por llenar nuestra encuesta! Valoramos tus comentarios. Si tienes alguna otra pregunta o necesitas ayuda en el futuro, no dudes en contactarnos. ¡Que tengas un excelente día! 😊',
+              options: {
+                preview_url: false
+              }
+            },
+            'text',
+            String(process.env.ID_NUMBER),
+            String(process.env.WP_TOKEN),
+            message.messages[0].from
+          )
+          await taskService.updateTask(task.id, {
+            status: 'CLOSE'
+          })
+        }
+      }
+    } catch (error) {
+      apiErrorHandler(error, res, 'processAddressStep: Se produjo un error al procesar el paso de la dirección.')
     }
   }
 }
