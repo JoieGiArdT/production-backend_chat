@@ -43,7 +43,7 @@ export default class WhatsappController {
                         buttons: {
                           Consulta: 'Consultas',
                           Documento: 'Documentación',
-                          Menu: 'Volver al menú'
+                          Menu: 'Volver al inicio'
                         },
                         options: {
                         // Opciones adicionales, si es necesario
