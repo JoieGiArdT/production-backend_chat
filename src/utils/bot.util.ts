@@ -348,11 +348,9 @@ class Bot {
           message.messages[0].from
         )
       } else {
-        const prompt = 'Necesito que respondas a la siguiente como si fueras un agente de servicio al cliente, tu respuesta será reflejada en el chat de un bot, por lo que las respuestas que generes no pueden ser largas. La consulta que hace el cliente es la siguiente: Hola'
-        // String(message.messages[0][message.messages[0].type].body)
-        console.log(prompt)
+        const prompt = 'Necesito que respondas a la siguiente como si fueras un agente de servicio al cliente, tu respuesta será reflejada en el chat de un bot, por lo que las respuestas que generes no pueden ser largas. La consulta que hace el cliente es la siguiente:'
+        String(message.messages[0][message.messages[0].type].body)
         const response = await chatGPTService.requestChatGPT(prompt)
-        console.log('response')
         await whatsappService.sendMessageWhatsapp(
           {
             bodyText: response,

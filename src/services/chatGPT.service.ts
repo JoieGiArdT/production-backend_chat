@@ -16,7 +16,7 @@ class ChatGPTService {
         content: prompts
       }]
     })
-    return String(response.data.choices[0])
+    return String(response.data.choices[0].message?.content)
   }
 }
 const chatGPTService = new ChatGPTService()
