@@ -27,7 +27,7 @@ export default class WhatsappController {
               let isMenu = false
               let type = ''
               const title = body.messages[0]?.interactive?.button_reply?.title
-              if (title === 'Volver al menú' || title === 'Volver al inicio') {
+              if (title === 'Volver al menú' || title === 'Volver al inicio' || title === 'Finalizar') {
                 isMenu = true
                 type = title
               }
@@ -76,7 +76,6 @@ export default class WhatsappController {
                   }
                   case 'Finalizar':{
                     void taskService.updateTask(responseGetTaskById[indexTasks].id, {
-                      sequence_task: [],
                       status: 'encuesta'
                     })
                     void whatsappService.sendMessageWhatsapp(

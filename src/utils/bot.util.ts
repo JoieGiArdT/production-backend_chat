@@ -625,7 +625,10 @@ class Bot {
             String(process.env.WP_TOKEN),
             message.messages[0].from
           )
+          const array = task.data().sequence_task
+          array.push(message.messages[0][message.messages[0].type].list_reply.title)
           await taskService.updateTask(task.id, {
+            sequence_task: array,
             status: 'CLOSE'
           })
         }
