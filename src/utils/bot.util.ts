@@ -23,7 +23,7 @@ class Bot {
           await this.processMenuStep(message, existingTask, res)
           break
         case 'query':
-          await this.processQueryStep(message, existingTask, res)
+          await this.processQueryStep(message, existingTask)
           break
         case 'document':
           await this.processDocumentStep(message, existingTask, res)
@@ -349,7 +349,7 @@ class Bot {
     }
   }
 
-  async processQueryStep (message: any, task: any, res: any): Promise<void> {
+  async processQueryStep (message: any, task: any): Promise<void> {
     try {
       let isText = false
       Object.entries(message.messages[0]).forEach(([key, _value]) => {
