@@ -27,7 +27,7 @@ export default class WhatsappController {
               let isMenu = false
               let type = ''
               const title = body.messages[0]?.interactive?.button_reply?.title
-              if (title === 'Volver al menú' || title === 'Ingresar identificación') {
+              if (title === 'Volver al menú' || title === 'Volver al inicio') {
                 isMenu = true
                 type = title
               }
@@ -39,7 +39,7 @@ export default class WhatsappController {
                     })
                     void whatsappService.sendMessageWhatsapp(
                       {
-                        bodyText: 'Por favor, selecciona el tipo de asistencia que necesitas de las opciones a continuación:',
+                        bodyText: 'Por favor, selecciona el tipo de asistencia que necesitas de las opciones a continuación:🔍',
                         buttons: {
                           Consulta: 'Consultas',
                           Documento: 'Documentación'
@@ -54,14 +54,26 @@ export default class WhatsappController {
                       body.messages[0].from)
                     break
                   }
-                  case 'Ingresar identificación':{
+                  case 'Volver al inicio':{
                     const array = responseGetTaskById[indexTasks].data().sequence_task
                     const arreglo = []
                     arreglo.push(array[0])
                     void taskService.updateTask(responseGetTaskById[indexTasks].id, {
                       sequence_task: arreglo,
-                      status: 'pin'
+                      status: 'phone'
                     })
+                    void whatsappService.sendMessageWhatsapp(
+                      {
+                        text: 'Por favor, introduce tu número de identificación para poder ayudarte mejor. ¡Estamos listos para atenderte! 💪👍',
+                        options: {
+                          preview_url: false
+                        }
+                      },
+                      'text',
+                      String(process.env.ID_NUMBER),
+                      String(process.env.WP_TOKEN),
+                      body.messages[0].from
+                    )
                     break
                   }
                 }

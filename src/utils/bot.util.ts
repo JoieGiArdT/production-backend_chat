@@ -48,7 +48,7 @@ class Bot {
       )
       await whatsappService.sendMessageWhatsapp(
         {
-          text: '¡Bienvenido! \n Por favor, ingresa tu número de identificación:',
+          text: '¡Hola! 😊 ¡Nos alegra tenerte aquí! Por favor, introduce tu número de identificación para poder ayudarte mejor. ¡Estamos listos para atenderte! 💪👍',
           options: {
             preview_url: false
           }
@@ -72,7 +72,7 @@ class Bot {
 
       if (!isValidIdentification) {
         // Número de identificación inválido
-        const errorMessage = 'El número de identificación ingresado no es válido. Por favor, intenta nuevamente.'
+        const errorMessage = '¡Oops! Parece que el número de identificación que ingresaste no es válido. Por favor, verifica y vuelve a intentarlo. Estamos aquí para ayudarte, así que no te preocupes, ¡estamos seguros de que encontraremos una solución juntos! 💪🔍✨'
         await whatsappService.sendMessageWhatsapp(
           {
             text: errorMessage,
@@ -94,7 +94,7 @@ class Bot {
           status: 'pin'
         })
 
-        const pinMessage = '¡Número de identificación válido! Ahora, ingresa tu PIN:'
+        const pinMessage = '¡Genial! Has ingresado un número de identificación válido. Ahora, necesitamos que ingreses tu PIN para poder continuar. Por favor, introduce tu PIN y asegúrate de que sea correcto. ¡Estamos listos para atenderte! 🔐💼💬'
         await whatsappService.sendMessageWhatsapp(
           {
             text: pinMessage,
@@ -123,12 +123,12 @@ class Bot {
 
       if (!isCorrectPin) {
         // PIN incorrecto
-        const errorMessage = 'El PIN ingresado es incorrecto. Por favor, intenta nuevamente o ingresa tu número de identificación para volver a empezar.'
+        const errorMessage = '¡Ups! Parece que el PIN que ingresaste no es correcto. Por favor, verifica que esté escrito correctamente y vuelve a intentarlo. Si sigues teniendo problemas, también puedes ingresar nuevamente tu número de identificación para comenzar desde el principio. ¡Estoy aquí para ayudarte! 🤔🔒💡'
         await whatsappService.sendMessageWhatsapp(
           {
             bodyText: errorMessage,
             buttons: {
-              inicio: 'Ingresar identificación'
+              inicio: 'Volver al inicio'
             },
             options: {
               // Opciones adicionales, si es necesario
@@ -152,7 +152,7 @@ class Bot {
         await whatsappService.sendMessageWhatsapp(
           {
             buttonName: 'Inmuebles',
-            bodyText: 'Por favor, selecciona uno de los inmuebles de la lista a continuación para recibir información detallada:',
+            bodyText: 'Por favor, selecciona el inmueble que deseas obtener información detallada. ¡Estoy aquí para ayudarte! 💼🏠🔍',
             sections: {
               Direcciones: addresses
             },
@@ -181,12 +181,12 @@ class Bot {
       })
       if (!booleano) {
         // Selección de dirección inválida
-        const errorMessage = 'La opción seleccionada no es válida. Por favor, selecciona una opción válida.'
+        const errorMessage = 'Oops, parece que has seleccionado una opción inválida. Por favor, elige una opción válida de la lista. ¡Estoy aquí para ayudarte! 😊👍'
         await whatsappService.sendMessageWhatsapp(
           {
             bodyText: errorMessage,
             buttons: {
-              inicio: 'Ingresar identificación'
+              inicio: 'Volver al inicio'
             },
             options: {
               // Opciones adicionales, si es necesario
@@ -207,12 +207,12 @@ class Bot {
             sequence_task: array,
             status: 'menu'
           })
-          const errorMessage = 'La opción seleccionada no es válida. Por favor, selecciona una opción válida.'
+          const errorMessage = 'Oops, parece que has seleccionado una opción inválida. Por favor, elige una opción válida de la lista. ¡Estoy aquí para ayudarte! 😊👍'
           await whatsappService.sendMessageWhatsapp(
             {
               bodyText: errorMessage,
               buttons: {
-                inicio: 'Ingresar número de identificación'
+                inicio: 'Volver al inicio'
               },
               options: {
                 // Opciones adicionales, si es necesario
@@ -226,11 +226,11 @@ class Bot {
         } else {
           await whatsappService.sendMessageWhatsapp(
             {
-              bodyText: 'Por favor, selecciona el tipo de asistencia que necesitas de las opciones a continuación:',
+              bodyText: '¡Perfecto! Estoy listo para ayudarte. Por favor, elige el tipo de asistencia que necesitas de las opciones a continuación. 😊👍',
               buttons: {
                 Consulta: 'Consultas',
                 Documento: 'Documentación',
-                inicio: 'Ingresar identificación'
+                inicio: 'Volver al inicio'
               },
               options: {
                 // Opciones adicionales, si es necesario
@@ -258,7 +258,7 @@ class Bot {
           })
           await whatsappService.sendMessageWhatsapp(
             {
-              bodyText: '¿En qué puedo ayudarte?',
+              bodyText: 'Por supuesto, estoy aquí para ayudarte con cualquier consulta que tengas sobre el inmueble seleccionado. ¡No dudes en preguntarme cualquier cosa relacionada con él! Estoy aquí para brindarte toda la información que necesitas. 😊🏠',
               buttons: {
                 Menu: 'Volver al menú'
               },
@@ -279,7 +279,7 @@ class Bot {
           })
           await whatsappService.sendMessageWhatsapp(
             {
-              bodyText: 'Selecciona un tipo de documento:',
+              bodyText: '¡Claro! Para enviarte una copia del documento que necesitas, por favor selecciona el tipo de documento de la siguiente lista. Una vez que elijas, te lo enviaré de inmediato. 📝📩',
               buttons: {
                 Contrato: 'Contrato',
                 Inventario: 'Inventario',
@@ -299,7 +299,7 @@ class Bot {
         default:
           await whatsappService.sendMessageWhatsapp(
             {
-              bodyText: 'La opción seleccionada no es válida. Por favor, selecciona una opción válida:',
+              bodyText: 'Lo siento, pero la opción que seleccionaste no es válida. Por favor, elige una opción válida de la lista proporcionada. 📋🔍',
               buttons: {
                 Consulta: 'Consultas',
                 Documento: 'Documentación'
@@ -362,6 +362,18 @@ class Bot {
           String(process.env.WP_TOKEN),
           message.messages[0].from
         )
+        await whatsappService.sendMessageWhatsapp(
+          {
+            text: 'No dudes en consultarme cualquier detalle o información adicional que necesites. Estoy a tu disposición. 😊🏡',
+            options: {
+              preview_url: false
+            }
+          },
+          'text',
+          String(process.env.ID_NUMBER),
+          String(process.env.WP_TOKEN),
+          message.messages[0].from
+        )
       }
     } catch (error) {
       apiErrorHandler(error, res, 'processQueryStep: Se produjo un error al procesar el paso de consulta.')
@@ -397,7 +409,7 @@ class Bot {
           await fileUtil.closeStreamAndDeleteFile(name)
           await whatsappService.sendMessageWhatsapp(
             {
-              bodyText: 'Selecciona un tipo de documento:',
+              bodyText: '¡Claro! Para enviarte una copia del documento que necesitas, por favor selecciona el tipo de documento de la siguiente lista. Una vez que elijas, te lo enviaré de inmediato. 📝📩',
               buttons: {
                 Contrato: 'Contrato',
                 Inventario: 'Inventario',
@@ -438,7 +450,7 @@ class Bot {
           await fileUtil.closeStreamAndDeleteFile(name)
           await whatsappService.sendMessageWhatsapp(
             {
-              bodyText: 'Selecciona un tipo de documento:',
+              bodyText: '¡Claro! Para enviarte una copia del documento que necesitas, por favor selecciona el tipo de documento de la siguiente lista. Una vez que elijas, te lo enviaré de inmediato. 📝📩',
               buttons: {
                 Contrato: 'Contrato',
                 Inventario: 'Inventario',
@@ -457,7 +469,7 @@ class Bot {
         }
         default: {
           // Opción de documento inválida
-          const errorMessage = 'La opción seleccionada no es válida. Por favor, selecciona una opción válida:'
+          const errorMessage = 'Lo siento, pero la opción que seleccionaste no es válida. Por favor, elige una opción válida de la lista proporcionada. 📋🔍'
           await whatsappService.sendMessageWhatsapp(
             {
               bodyText: errorMessage,
