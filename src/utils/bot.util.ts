@@ -28,7 +28,7 @@ class Bot {
         case 'document':
           await this.processDocumentStep(message, existingTask, res)
           break
-        case 'finalizar':
+        case 'encuesta':
           await this.processEncuestaStep(message, existingTask, res)
           break
         default:

@@ -81,7 +81,7 @@ export default class WhatsappController {
                     void whatsappService.sendMessageWhatsapp(
                       {
                         buttonName: 'Puntuacion',
-                        bodyText: '🤖 ¡Gracias por tu tiempo y por llenar nuestra encuesta! Valoramos tus comentarios. Si tienes alguna otra pregunta o necesitas ayuda en el futuro, no dudes en contactarnos. ¡Que tengas un excelente día! 😊',
+                        bodyText: '🤖 Nos encantaría conocer tu opinión sobre nuestros servicios. Por favor, ayúdanos respondiendo a la siguiente pregunta: En una escala del 1 al 5, donde 1 es poco probable y 5 es muy probable, ¿qué tan probable es que recomiendes nuestros servicios a un amigo o colega? Tu opinión es muy valiosa para nosotros y nos ayudará a mejorar. ¡Gracias por tu participación! 😊',
                         sections: {
                           Puntuacion: [
                             {
