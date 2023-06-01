@@ -23,7 +23,7 @@ class Bot {
           await this.processMenuStep(message, existingTask, res)
           break
         case 'query':
-          await this.processQueryStep(message, res)
+          await this.processQueryStep(message, existingTask, res)
           break
         case 'document':
           await this.processDocumentStep(message, existingTask, res)
@@ -141,6 +141,18 @@ class Bot {
         )
       } else {
         // PIN correcto
+        await whatsappService.sendMessageWhatsapp(
+          {
+            text: '¡Genial! Me alegra saber que pudimos autenticarte correctamente. Permíteme buscar los inmuebles en los que eres inquilino o propietario. Por favor, espera un momento mientras reviso la información. 🕵️‍♂️🔎',
+            options: {
+              preview_url: false
+            }
+          },
+          'text',
+          String(process.env.ID_NUMBER),
+          String(process.env.WP_TOKEN),
+          message.messages[0].from
+        )
         const array = task.data().sequence_task
         array.push(message.messages[0][message.messages[0].type].body)
         await taskService.updateTask(task.id, {
@@ -218,8 +230,22 @@ class Bot {
             message.messages[0].from
           )
         } else {
+          await whatsappService.sendMessageWhatsapp(
+            {
+              text: '🤖 Estoy obteniendo información del inmueble seleccionado... Por favor, bríndame un momento mientras recopilo los detalles. ⏳🏠',
+              options: {
+                preview_url: false
+              }
+            },
+            'text',
+            String(process.env.ID_NUMBER),
+            String(process.env.WP_TOKEN),
+            message.messages[0].from
+          )
+          const info = await ninoxService.getInfoByAddress(message.messages[0][message.messages[0].type].list_reply.title)
           const array = task.data().sequence_task
           array.push(message.messages[0][message.messages[0].type].list_reply.title)
+          array.push(info)
           await taskService.updateTask(task.id, {
             sequence_task: array,
             status: 'menu'
@@ -323,7 +349,7 @@ class Bot {
     }
   }
 
-  async processQueryStep (message: any, res: any): Promise<void> {
+  async processQueryStep (message: any, task: any, res: any): Promise<void> {
     try {
       let isText = false
       Object.entries(message.messages[0]).forEach(([key, _value]) => {
@@ -348,8 +374,7 @@ class Bot {
           message.messages[0].from
         )
       } else {
-        const prompt = 'Necesito que respondas a la siguiente como si fueras un agente de servicio al cliente, tu respuesta será reflejada en el chat de un bot, por lo que las respuestas que generes no pueden ser largas. La consulta que hace el cliente es la siguiente:' +
-        String(message.messages[0][message.messages[0].type].body)
+        const prompt = `Necesito que respondas a esto: "${String(message.messages[0][message.messages[0].type].body)}"  como si fueras un agente de servicio al cliente y que sigas las siguientes intrucciones: Al recibir una solicitud del usuario, analiza el contenido para identificar la intención principal y determinar la información relevante necesaria para responder adecuadamente. Actúa como un agente de servicio al cliente de Financar, una reconocida inmobiliaria, manteniendo un tono cordial, profesional y amigable en todas las interacciones. Verifica los campos del JSON proporcionado para obtener información específica: si se refiere a un inmueble, utiliza el campo 'informacion_del_inmueble' para brindar detalles precisos sobre ese inmueble en particular. Si se trata de un contrato, utiliza el campo 'informacion_del_contrato' para ofrecer asistencia relacionada. Para consultas sobre el inquilino, utiliza el campo 'informacion_del_inquilino'. En el caso del propietario, si se indica 'Sin acceso' en el campo 'informacion_del_propietario', infórmale al usuario que no se tiene acceso a esa información. Si la información requerida no está presente o es insuficiente, solicita al usuario más detalles o que repita la solicitud. En caso de no entender la solicitud o la intención del usuario, pide clarificación y repite la pregunta. Recuerda mantener un tono cordial y amigable en todas las respuestas, representando los valores de Financar. Actúa como un representante de la inmobiliaria, brindando un servicio al cliente de calidad. Estas instrucciones ayudarán a la inteligencia artificial a responder adecuadamente a las solicitudes del usuario y brindar un servicio al cliente efectivo y personalizado. Informacion del JSON ${JSON.stringify(task.data().sequence_task[3])}`
         const response = await chatGPTService.requestChatGPT(prompt)
         await whatsappService.sendMessageWhatsapp(
           {
@@ -389,21 +414,31 @@ class Bot {
       const documentOption = (message.messages[0]?.interactive?.button_reply?.title !== undefined)
         ? String(message.messages[0]?.interactive?.button_reply?.title).toLowerCase()
         : undefined
+      if (documentOption !== undefined) {
+        await whatsappService.sendMessageWhatsapp(
+          {
+            text: '¡Excelente! Ya me encuentro trabajando en tu documento. Por favor, permíteme unos segundos para completar la tarea. Estoy dedicado a brindarte un resultado de calidad. ¡Gracias por tu paciencia! ⏳💼📄',
+            options: {
+              preview_url: false
+            }
+          },
+          'text',
+          String(process.env.ID_NUMBER),
+          String(process.env.WP_TOKEN),
+          message.messages[0].from
+        )
+      }
       switch (documentOption) {
         case 'inventario': {
           // Obtener el inventario desde Ninox
           const contractDocument = await ninoxService.getInventoryDocumentByAddress(task.data().sequence_task[2])
-          console.log(contractDocument)
           const name = await fileUtil.downloadBufferAsFile(contractDocument)
-          console.log(name)
           const document = await fileUtil.openStreamAndgetFileFormData(name)
-          console.log(document)
           const id = await whatsappService.uploadDocumentId(
             document,
             String(process.env.ID_NUMBER),
             String(process.env.WP_TOKEN)
           )
-          console.log(id)
           await whatsappService.sendMessageWhatsapp(
             {
               urlOrObjectId: id,
@@ -419,10 +454,9 @@ class Bot {
           await fileUtil.closeStreamAndDeleteFile(name)
           await whatsappService.sendMessageWhatsapp(
             {
-              bodyText: '¡Claro! Para enviarte una copia del documento que necesitas, por favor selecciona el tipo de documento de la siguiente lista. Una vez que elijas, te lo enviaré de inmediato. 📝📩',
+              bodyText: '¡Perfecto! Aquí tienes el documento que me pediste. 📄✅ \n Si necesitas alguno otro documento o tienes alguna otra consulta, por favor indícame y con gusto te lo proporcionaré. ¡Estoy aquí para ayudarte en lo que necesites! 🤖🔍💼',
               buttons: {
                 Contrato: 'Contrato',
-                Inventario: 'Inventario',
                 Menu: 'Volver al menú'
               },
               options: {
@@ -452,7 +486,7 @@ class Bot {
                 // Opciones adicionales, si es necesario
               }
             },
-            'button',
+            'document',
             String(process.env.ID_NUMBER),
             String(process.env.WP_TOKEN),
             message.messages[0].from
@@ -460,9 +494,8 @@ class Bot {
           await fileUtil.closeStreamAndDeleteFile(name)
           await whatsappService.sendMessageWhatsapp(
             {
-              bodyText: '¡Claro! Para enviarte una copia del documento que necesitas, por favor selecciona el tipo de documento de la siguiente lista. Una vez que elijas, te lo enviaré de inmediato. 📝📩',
+              bodyText: '¡Perfecto! Aquí tienes el documento que me pediste. 📄✅ \n Si necesitas alguno otro documento o tienes alguna otra consulta, por favor indícame y con gusto te lo proporcionaré. ¡Estoy aquí para ayudarte en lo que necesites! 🤖🔍💼',
               buttons: {
-                Contrato: 'Contrato',
                 Inventario: 'Inventario',
                 Menu: 'Volver al menú'
               },

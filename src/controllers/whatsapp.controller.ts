@@ -56,11 +56,8 @@ export default class WhatsappController {
                     break
                   }
                   case 'Volver al inicio':{
-                    const array = responseGetTaskById[indexTasks].data().sequence_task
-                    const arreglo = []
-                    arreglo.push(array[0])
                     void taskService.updateTask(responseGetTaskById[indexTasks].id, {
-                      sequence_task: arreglo,
+                      sequence_task: [],
                       status: 'phone'
                     })
                     void whatsappService.sendMessageWhatsapp(

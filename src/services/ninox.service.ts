@@ -72,6 +72,28 @@ class NinoxService {
     }
   }
 
+  async getInfoByAddress (address: string): Promise<any> {
+    const info = {
+      informacion_del_inmueble: null,
+      informacion_del_contrato: null,
+      informacion_del_inquilino: null,
+      informacion_del_propietario: 'Sin acceso'
+    }
+    let query = `select 'Inmuebles' where 'Dirección' = "${address}"`
+    let recordId = await this.getRecordIds(query)
+    let id = String(recordId[0]).replace(/^\D+/g, '')
+    let valores = await this.getRecordValueAll('Inmuebles', id)
+    info.informacion_del_inmueble = valores
+    query = `select 'Contratos' where Inmueble.'Dirección' = "${address}" order by today() - FechaFinContrato`
+    recordId = await this.getRecordIds(query)
+    id = String(recordId[0]).replace(/^\D+/g, '')
+    valores = await this.getRecordValueAll('Contratos', id[0])
+    info.informacion_del_contrato = valores
+    valores = await this.getRecordValueAll('Personas', valores.Inquilino)
+    info.informacion_del_inquilino = valores
+    return info
+  }
+
   async getServiceReferenceByAddress (address: string, service: string): Promise<string> {
     const query = `select 'Inmuebles' where 'Dirección' = "${address}"`
     const recordIds = await this.getRecordIds(query)
@@ -153,6 +175,16 @@ class NinoxService {
     }
     const response = await axios.get(url, { headers })
     return response.data.fields[field]
+  }
+
+  private async getRecordValueAll (tableName: string, recordId: string): Promise<any> {
+    const url = `https://api.ninox.com/v1/teams/${this.teamId}/databases/${this.databaseId}/tables/${tableName}/records/${recordId}`
+    const headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.apiKey}`
+    }
+    const response = await axios.get(url, { headers })
+    return response.data.fields
   }
 }
 
@@ -237,4 +269,7 @@ class NinoxService {
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 const ninoxService = new NinoxService()
+ninoxService.getInfoByAddress('K 27 N. 74 - 92').then((response) => {
+  console.log(response)
+}).catch(() => {})
 export { ninoxService }
