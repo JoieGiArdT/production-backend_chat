@@ -348,11 +348,11 @@ class Bot {
           message.messages[0].from
         )
       } else {
-        const prompt = 'Necesito que respondas a la siguiente como si fueras un agente de servicio al cliente, tu respuesta será reflejada en el chat de un bot, por lo que las respuestas que generes no pueden ser largas. La consulta que hace el cliente es la siguiente:' +
-        String(message.messages[0][message.messages[0].type].body)
+        const prompt = 'Necesito que respondas a la siguiente como si fueras un agente de servicio al cliente, tu respuesta será reflejada en el chat de un bot, por lo que las respuestas que generes no pueden ser largas. La consulta que hace el cliente es la siguiente: Hola'
+        // String(message.messages[0][message.messages[0].type].body)
         console.log(prompt)
         const response = await chatGPTService.requestChatGPT(prompt)
-        console.log(response)
+        console.log('response')
         await whatsappService.sendMessageWhatsapp(
           {
             bodyText: response,
@@ -392,7 +392,7 @@ class Bot {
         ? String(message.messages[0]?.interactive?.button_reply?.title).toLowerCase()
         : undefined
       switch (documentOption) {
-        case 'buttoninventario': {
+        case 'inventario': {
           // Obtener el inventario desde Ninox
           const contractDocument = await ninoxService.getInventoryDocumentByAddress(task.data().sequence_task[2])
           const name = await fileUtil.downloadBufferAsFile(contractDocument)
@@ -434,7 +434,7 @@ class Bot {
           )
           break
         }
-        case 'buttoncontrato': {
+        case 'contrato': {
           const contractDocument = await ninoxService.getContractDocumentByAddress(task.data().sequence_task[2])
           const name = await fileUtil.downloadBufferAsFile(contractDocument)
           const document = await fileUtil.openStreamAndgetFileFormData(name)

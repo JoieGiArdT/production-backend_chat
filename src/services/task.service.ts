@@ -12,6 +12,7 @@ import {
   doc
 } from 'firebase/firestore'
 import FireStore from '../config/firebase.database'
+import { chatGPTService } from './chatGPT.service'
 
 class TaskService {
   async createTask (
@@ -53,5 +54,15 @@ class TaskService {
     return resultMessages
   }
 }
+const variable = async (): Promise<void> => {
+  const prompt = 'Necesito que respondas a la siguiente como si fueras un agente de servicio al cliente, tu respuesta será reflejada en el chat de un bot, por lo que las respuestas que generes no pueden ser largas. La consulta que hace el cliente es la siguiente:' +
+  String('holi')
+  console.log(prompt)
+  const response = await chatGPTService.requestChatGPT(prompt)
+  console.log(response)
+}
+
+void variable()
+
 const taskService = new TaskService()
 export { taskService, SchemaTask }
