@@ -348,8 +348,11 @@ class Bot {
           message.messages[0].from
         )
       } else {
-        const prompt = 'Necesito que respondas a la siguiente como si fueras un agente de servicio al cliente, tu respuesta será reflejada en el chat de un bot, por lo que las respuestas que generes no pueden ser largas. La consulta que hace el cliente es la siguiente:'
-        const response = await chatGPTService.requestChatGPT(prompt + String(message.messages[0][message.messages[0].type].body))
+        const prompt = 'Necesito que respondas a la siguiente como si fueras un agente de servicio al cliente, tu respuesta será reflejada en el chat de un bot, por lo que las respuestas que generes no pueden ser largas. La consulta que hace el cliente es la siguiente:' +
+        String(message.messages[0][message.messages[0].type].body)
+        console.log(prompt)
+        const response = await chatGPTService.requestChatGPT(prompt)
+        console.log(response)
         await whatsappService.sendMessageWhatsapp(
           {
             bodyText: response,
@@ -385,7 +388,9 @@ class Bot {
 
   async processDocumentStep (message: any, task: any, res: any): Promise<void> {
     try {
-      const documentOption = String(message.messages[0].type) + String(message.messages[0][message.messages[0].type].text).toLowerCase()
+      const documentOption = (message.messages[0]?.interactive?.button_reply?.title !== undefined)
+        ? String(message.messages[0]?.interactive?.button_reply?.title).toLowerCase()
+        : undefined
       switch (documentOption) {
         case 'buttoninventario': {
           // Obtener el inventario desde Ninox

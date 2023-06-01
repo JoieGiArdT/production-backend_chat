@@ -12,4 +12,5 @@ class ChatGPTService {
   }
 }
 const chatGPTService = new ChatGPTService()
+
 export { chatGPTService }

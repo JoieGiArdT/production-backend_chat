@@ -42,7 +42,8 @@ export default class WhatsappController {
                         bodyText: 'Por favor, selecciona el tipo de asistencia que necesitas de las opciones a continuación:🔍',
                         buttons: {
                           Consulta: 'Consultas',
-                          Documento: 'Documentación'
+                          Documento: 'Documentación',
+                          Menu: 'Volver al menú'
                         },
                         options: {
                         // Opciones adicionales, si es necesario
