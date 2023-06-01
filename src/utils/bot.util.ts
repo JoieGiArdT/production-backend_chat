@@ -198,15 +198,9 @@ class Bot {
           message.messages[0].from
         )
       } else {
-        const isCorrectAddress = await ninoxService.getInmuebleByAddress(message.messages[0][message.messages[0].type].list_reply.id)
+        const isCorrectAddress = await ninoxService.getInmuebleByAddress(message.messages[0][message.messages[0].type].list_reply.title)
 
         if (!isCorrectAddress) {
-          const array = task.data().sequence_task
-          array.push(message.messages[0][message.messages[0].type].list_reply.title)
-          await taskService.updateTask(task.id, {
-            sequence_task: array,
-            status: 'menu'
-          })
           const errorMessage = 'Oops, parece que has seleccionado una opción inválida. Por favor, elige una opción válida de la lista. ¡Estoy aquí para ayudarte! 😊👍'
           await whatsappService.sendMessageWhatsapp(
             {
@@ -224,6 +218,12 @@ class Bot {
             message.messages[0].from
           )
         } else {
+          const array = task.data().sequence_task
+          array.push(message.messages[0][message.messages[0].type].list_reply.title)
+          await taskService.updateTask(task.id, {
+            sequence_task: array,
+            status: 'menu'
+          })
           await whatsappService.sendMessageWhatsapp(
             {
               bodyText: '¡Perfecto! Estoy listo para ayudarte. Por favor, elige el tipo de asistencia que necesitas de las opciones a continuación. 😊👍',
@@ -250,7 +250,9 @@ class Bot {
 
   async processMenuStep (message: any, task: any, res: any): Promise<void> {
     try {
-      const menuOption = String(message.messages[0][message.messages[0].type].text).toLowerCase()
+      const menuOption = (message.messages[0]?.interactive?.button_reply?.title !== undefined)
+        ? String(message.messages[0]?.interactive?.button_reply?.title).toLowerCase()
+        : undefined
       switch (menuOption) {
         case 'consulta': {
           await taskService.updateTask(task.id, {
@@ -331,7 +333,7 @@ class Bot {
       if (!isText) {
         await whatsappService.sendMessageWhatsapp(
           {
-            bodyText: 'La respuesta no es válida. Por favor, escribe la consulta en texto.',
+            bodyText: '¿Podrías brindarme más detalles o información adicional sobre tu consulta? De esta manera, podré comprenderte mejor y brindarte una respuesta más precisa y útil. ¡Estoy aquí para ayudarte! 😊',
             buttons: {
               Menu: 'Volver al menú'
             },
