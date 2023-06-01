@@ -595,10 +595,8 @@ class Bot {
           message.messages[0].from
         )
       } else {
-        const hasLetters = /[a-zA-Z]/.test(message.messages[0][message.messages[0].type].list_reply.title)
-        const isNumber = /^[1-9]|10$/.test(message.messages[0][message.messages[0].type].list_reply.title)
-
-        if (!(hasLetters && isNumber)) {
+        // eslint-disable-next-line no-constant-condition
+        if (false) {
           const errorMessage = 'Oops, parece que has seleccionado una opción inválida. Por favor, elige una opción del 1 al 5 de la lista. ¡Nos importa tu satisfacción! 😊👍'
           await whatsappService.sendMessageWhatsapp(
             {
