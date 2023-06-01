@@ -269,7 +269,4 @@ class NinoxService {
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 const ninoxService = new NinoxService()
-ninoxService.getInfoByAddress('K 27 N. 74 - 92').then((response) => {
-  console.log(response)
-}).catch(() => {})
 export { ninoxService }
