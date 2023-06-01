@@ -9,9 +9,12 @@ class ChatGPTService {
       apiKey: this.apiKey
     })
     const openai = new OpenAIApi(configuration)
-    const response = await openai.createCompletion({
+    const response = await openai.createChatCompletion({
       model: 'gpt-3.5-turbo',
-      prompt: prompts
+      messages: [{
+        role: 'user',
+        content: prompts
+      }]
     })
     return String(response.data.choices[0])
   }
